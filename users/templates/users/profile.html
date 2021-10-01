@@ -1,6 +1,8 @@
 {% extends 'products/base.html' %}
 {% load static %}
 
+{% load static %}
+
 {% block css %}
     <link href="{% static 'css/profile.css' %}" rel="stylesheet">
 {% endblock %}
@@ -57,6 +59,7 @@
                         </div>
                     </div>
                 </form>
+
             </div>
             {% include 'baskets/baskets.html' %}
         </div>
