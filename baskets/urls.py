@@ -14,11 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import products
 
-app_name = 'products'
+from baskets.views import basket_add, basket_remove
+
+app_name = 'baskets'
 
 urlpatterns = [
-    path('', products, name='index'),
-
+    path('add/<int:product_id>/',basket_add,name='basket'),
+    path('remove/<int:product_id>/',basket_remove,name='basket_remove')
 ]
