@@ -3,6 +3,7 @@ from django import forms
 
 from users.models import User
 
+
 class UserLoginForm(AuthenticationForm):
 
     class Meta:
@@ -19,11 +20,9 @@ class UserLoginForm(AuthenticationForm):
 
 class UserRegisterForm(UserCreationForm):
 
-
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2',)
-
 
     def __init__(self, *args, **kwargs):
         super(UserRegisterForm, self).__init__(*args, **kwargs)
@@ -39,21 +38,20 @@ class UserRegisterForm(UserCreationForm):
 
 class UserProfileForm(UserChangeForm):
 
-    image = forms.ImageField(widget=forms.FileInput(),required=False)
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
+
     class Meta:
         model = User
-        fields =  ('username', 'email', 'first_name', 'last_name', 'image')
+        fields = ('username', 'email', 'first_name', 'last_name', 'image')
 
-
-    def __init__(self,*args,**kwargs):
-        super(UserProfileForm, self).__init__(*args,**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['readonly'] = True
         self.fields['email'].widget.attrs['readonly'] = True
 
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
-
 
     def clean_image(self):
         data = self.cleaned_data['image']
