@@ -50,23 +50,17 @@ def profile(request):
         form = UserProfileForm(data=request.POST, instance=request.user, files=request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, "Профиль сохранен")
             return HttpResponseRedirect(reverse('users:profile'))
         else:
-            print(form.errors)
-    total_quantity = 0
-    total_sum = 0
-    baskets = Basket.objects.filter(user=request.user)
-    for basket in baskets:
-        total_quantity += basket.quantity
-        total_sum += basket.sum()
+            messages.error(request, "Профиль не сохранен")
     context = {
         'title': 'Geekshop - Профайл',
         'form': UserProfileForm(instance=request.user),
-        'baskets': baskets,
-        'total_quantity': total_quantity,
-        'total_sum': total_sum,
+        'baskets': Basket.objects.filter(user = request.user),
     }
-    return render(request, 'users/profile.html', context)
+    return render(request,'users/profile.html', context)
+
 
 
 def logout(request):
