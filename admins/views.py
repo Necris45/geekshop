@@ -107,6 +107,30 @@ class CategoryCreateView(CreateView, CustomDispatchMixin):
         return context
 
 
+class CategoryUpdateView(UpdateView, CustomDispatchMixin):
+    model = ProductCategory
+    template_name = 'admins/admin-category-update-delete.html'
+    form_class = ProductCategoryCreateForm
+    success_url = reverse_lazy('admins:admins_categories')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(CategoryUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Изменение Категории'
+        return context
+
+
+class CategoryDeleteView(DeleteView, CustomDispatchMixin):
+    model = ProductCategory
+    template_name = 'admins/admin-category-read.html'
+    success_url = reverse_lazy('admins:admins_categories')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.available = False
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
 class ProductCreateView(CreateView, CustomDispatchMixin):
     model = Product
     template_name = 'admins/admin-product-create.html'
