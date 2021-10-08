@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryEditForm, ProductEditForm
+from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm
 from geekshop.mixin import CustomDispatchMixin
 from users.models import User
 from products.models import ProductCategory, Product
@@ -97,8 +97,8 @@ class ProductListView(ListView, CustomDispatchMixin):
 
 class CategoryCreateView(CreateView, CustomDispatchMixin):
     model = ProductCategory
-    template_name = 'admins/admins_category_create.html'
-    form_class = ProductCategoryEditForm
+    template_name = 'admins/admin_category_create.html'
+    form_class = ProductCategoryCreateForm
     success_url = reverse_lazy('admins:admins_categories')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -110,41 +110,10 @@ class CategoryCreateView(CreateView, CustomDispatchMixin):
 class ProductCreateView(CreateView, CustomDispatchMixin):
     model = Product
     template_name = 'admins/admin-product-create.html'
-    form_class = ProductEditForm
+    form_class = ProductCreateForm
     success_url = reverse_lazy('admins:admins_products')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductCreateView, self).get_context_data(**kwargs)
         context['title'] = 'Админка | Новый товар'
         return context
-
-
-class CategoryUpdateView(UpdateView, CustomDispatchMixin):
-    model = ProductCategory
-    template_name = 'admins/admin-category-update-delete.html'
-    form_class = ProductCategoryEditForm
-    success_url = reverse_lazy('admins:admins_categories')
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(CategoryUpdateView, self).get_context_data(**kwargs)
-        context['title'] = 'Админка | Обновление пользователя'
-        return context
-
-
-class CategoryDeleteView(DeleteView):
-    model = ProductCategory
-    template_name = 'admins/admin-category-read.html'
-    success_url = reverse_lazy('admins:admins_category')
-
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
-    def dispatch(self, request, *args, **kwargs):
-        return super(CategoryDeleteView, self).dispatch(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.is_active != False:
-            self.object.is_active = False
-        else:
-            self.object.is_active = True
-        self.object.save()
-        return HttpResponseRedirect(self.get_success_url())

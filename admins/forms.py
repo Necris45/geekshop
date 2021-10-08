@@ -29,7 +29,7 @@ class UserAdminProfileForm(UserProfileForm):
         self.fields['email'].widget.attrs['readonly'] = False
 
 
-class ProductCategoryEditForm(forms.ModelForm):
+class ProductCategoryCreateForm(forms.ModelForm):
     class Meta:
         model = ProductCategory
         fields = '__all__'
@@ -41,7 +41,7 @@ class ProductCategoryEditForm(forms.ModelForm):
             field.help_text = ''
 
 
-class ProductEditForm(forms.ModelForm):
+class ProductCreateForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
@@ -51,3 +51,5 @@ class ProductEditForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.help_text = ''
+
+
