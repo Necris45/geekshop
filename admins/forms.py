@@ -43,6 +43,8 @@ class ProductCategoryCreateForm(forms.ModelForm):
 
 
 class ProductCreateForm(forms.ModelForm):
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
+
     class Meta:
         model = Product
         fields = '__all__'
@@ -50,7 +52,7 @@ class ProductCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            if field_name == 'image':
+            if field_name == 'image' or field_name == 'category':
                 field.widget.attrs['class'] = 'form-control'
             else:
                 field.widget.attrs['class'] = 'form-control py-4'

@@ -65,7 +65,7 @@ class UserDeleteView(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.is_active != False:
+        if self.object.is_active is not False:
             self.object.is_active = False
         else:
             self.object.is_active = True
@@ -126,7 +126,7 @@ class CategoryDeleteView(DeleteView, CustomDispatchMixin):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.is_active != False:
+        if self.object.is_active is not False:
             self.object.is_active = False
         else:
             self.object.is_active = True
@@ -144,3 +144,30 @@ class ProductCreateView(CreateView, CustomDispatchMixin):
         context = super(ProductCreateView, self).get_context_data(**kwargs)
         context['title'] = 'Админка | Новый товар'
         return context
+
+
+class ProductUpdateView(UpdateView, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-update-delete.html'
+    form_class = ProductCreateForm
+    success_url = reverse_lazy('admins:admins_products')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProductUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Изменение товара'
+        return context
+
+
+class ProductDeleteView(DeleteView, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-product-read.html'
+    success_url = reverse_lazy('admins:admins_products')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_active is not False:
+            self.object.is_active = False
+        else:
+            self.object.is_active = True
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
