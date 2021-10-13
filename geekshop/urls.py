@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
-from products.views import index, products
+from products.views import index, ProductListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
