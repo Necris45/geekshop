@@ -49,10 +49,10 @@ class BasketUpdateView(UpdateView, UserDispatchMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(BasketUpdateView, self).get_context_data(**kwargs)
-        context['baskets'] = Basket.objects.filter(user=self.request.user)
-        return context
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super(BasketUpdateView, self).get_context_data(**kwargs)
+    #     context['baskets'] = Basket.objects.filter(user=self.request.user)
+    #     return context
 
     def get(self, request, *args, **kwargs):
         super(BasketUpdateView, self).get(request, *args, **kwargs)
