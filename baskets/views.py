@@ -37,10 +37,6 @@ class BasketCreateView(CreateView, UserDispatchMixin):
 class BasketDeleteView(DeleteView, UserDispatchMixin):
     model = Basket
     success_url = reverse_lazy('users:profile')
-# @login_required
-# def basket_remove(request, product_id):
-#     Basket.objects.get(id=product_id).delete()
-#     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class BasketUpdateView(UpdateView, UserDispatchMixin):
@@ -77,19 +73,3 @@ class BasketUpdateView(UpdateView, UserDispatchMixin):
             return JsonResponse({'result': result})
 
         return redirect(self.success_url)
-# @login_required
-# def basket_edit(request, id, quantity):
-#     if request.is_ajax():
-#         basket = Basket.objects.get(id=id)
-#         if quantity > 0:
-#             basket.quantity = quantity
-#             basket.save()
-#         else:
-#             basket.delete()
-#
-#         baskets = Basket.objects.filter(user=request.user)
-#         context = {
-#             'baskets': baskets
-#         }
-#         result = render_to_string('baskets/baskets.html', context)
-#         return JsonResponse({'result': result})
