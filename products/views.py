@@ -4,6 +4,7 @@ from .models import ProductCategory, Product
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 
+
 # Create your views here.
 
 
@@ -35,7 +36,7 @@ class ProductListView(ListView):
             page_id = self.kwargs['page_id']
 
         goods = Product.objects.filter(category_id=category_id, is_active=True, category__is_active=True) \
-            if category_id != None else Product.objects.filter(is_active=True, category__is_active=True)
+            if category_id is not None else Product.objects.filter(is_active=True, category__is_active=True)
 
         paginator = Paginator(goods, per_page=3)
 
