@@ -1,7 +1,10 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
+from django.core.exceptions import ValidationError
 
 from users.models import User
+import hashlib
+import random
 
 
 class UserLoginForm(AuthenticationForm):
@@ -35,6 +38,20 @@ class UserRegisterForm(UserCreationForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control py-4'
 
+    def save(self, commit=True):
+        user = super(UserRegisterForm, self).save()
+        user.is_active = False
+        salt = hashlib.sha1(str(random.random()).encode('utf8')).hexdigest()[:6]
+        user.activation_key = hashlib.sha1((user.email + salt).encode('utf8')).hexdigest()
+        user.save()
+        return user
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if User.objects.filter(email__iexact=email).exists():
+            raise ValidationError("Кто-то зареган на указанный email")
+        return email
+
 
 class UserProfileForm(UserChangeForm):
 
@@ -54,8 +71,8 @@ class UserProfileForm(UserChangeForm):
         self.fields['image'].widget.attrs['class'] = 'custom-file-input'
 
     def clean_image(self):
-        if self.cleaned_data['image'] != None:
+        if self.cleaned_data['image'] is not None:
             data = self.cleaned_data['image']
-            if data.size > 102400000:
+            if data.size > 1024:
                 raise forms.ValidationError('Файл слишком большой')
             return data
