@@ -12,8 +12,8 @@ def save_user_profile(backend, user, response, *args, **kwargs):
         return
 
     api_url = urlunparse(('http', 'api.vk.com', '/method/users.get', None, urlencode(
-        OrderedDict(fields=','.join(('bdate', 'sex', 'about', 'personal', 'photo_100')), access_token=response['access_token'],
-                    v=5.131)), None))
+        OrderedDict(fields=','.join(('bdate', 'sex', 'about', 'personal', 'photo_100')),
+                    access_token=response['access_token'], v=5.131)), None))
 
     resp = requests.get(api_url)
     if resp.status_code != 200:
@@ -44,7 +44,7 @@ def save_user_profile(backend, user, response, *args, **kwargs):
         raise AuthForbidden('social_core.backends.vk.VKOAuth2')
 
     if data['personal']:
-        user_langs = " ".join(data['personal']['langs'])
+        user_langs = ", ".join(data['personal']['langs'])
         user.userprofile.langs = user_langs
 
     if data['photo_100']:
