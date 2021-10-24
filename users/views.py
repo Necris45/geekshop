@@ -1,14 +1,16 @@
 from django.contrib.auth.views import LoginView, LogoutView
+from django.db import transaction
 from django.shortcuts import render, HttpResponseRedirect, redirect, get_object_or_404
 from django.contrib import auth, messages
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, UpdateView
 from django.conf import settings
 from django.core.mail import send_mail
-from baskets.models import Basket
 from geekshop.mixin import BaseClassContextMixin, UserDispatchMixin
-from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegisterForm, UserProfileForm, UserProfileEditForm
 from users.models import User
+
+
 # Create your views here.
 
 
@@ -31,7 +33,7 @@ class RegisterListView(FormView, BaseClassContextMixin):
             user = form.save()
             if send_verify_link(user):
                 user_message = f"На адрес {user.email} отправлено письмо с кодом подтверждения. Пройдите по ссылке " \
-                f"указанной в письме, для завершения регистрации "
+                               f"указанной в письме, для завершения регистрации "
                 messages.success(request, user_message)
             return redirect(self.success_url)
         return redirect(self.success_url)
@@ -47,14 +49,16 @@ class ProfileFormView(UpdateView, BaseClassContextMixin, UserDispatchMixin):
     def get_object(self, queryset=None):
         return get_object_or_404(User, pk=self.request.user.pk)
 
-    # def get_context_data(self, **kwargs):
-    #     context = super(ProfileFormView, self).get_context_data(**kwargs)
-    #     context['baskets'] = Basket.objects.filter(user=self.request.user)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super(ProfileFormView, self).get_context_data(**kwargs)
+        context['profile'] = UserProfileEditForm(instance=self.request.user.userprofile)
+        return context
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST, files=request.FILES, instance=self.get_object())
-        if form.is_valid():
+        form = UserProfileForm(data=request.POST, files=request.FILES, instance=request.user)
+        profile_form = UserProfileEditForm(request.POST, instance=request.user.userprofile)
+        if form.is_valid() and profile_form.is_valid():
             form.save()
             return redirect(self.success_url)
         return redirect(self.success_url)
@@ -65,22 +69,22 @@ class Logout(LogoutView):
 
 
 def send_verify_link(user):
-    if User.objects.filter(email=user.email) is not None:
-        verify_link = reverse('users:verify',args=[user.email,user.activation_key])
-        subject = f'Для активации учетной записи {user.username} пройдите по ссылке'
-        message = f'Для подтверждения учетной записи {user.username} на портале \n {settings.DOMAIN_NAME}{verify_link}'
-        return send_mail(subject,message,settings.EMAIL_HOST_USER,[user.email],fail_silently=False)
+    verify_link = reverse('users:verify', args=[user.email, user.activation_key])
+    subject = f'Для активации учетной записи {user.username} пройдите по ссылке'
+    message = f'Для подтверждения учетной записи {user.username} на портале \n {settings.DOMAIN_NAME}{verify_link}'
+    return send_mail(subject, message, settings.EMAIL_HOST_USER, [user.email], fail_silently=False)
 
 
-def verify(request,email,activation_key):
+def verify(request, email, activation_key):
     try:
         user = User.objects.get(email=email)
         if user and user.activation_key == activation_key and not user.is_activation_key_expired():
             user.activation_key = ''
             user.activation_key_created = None
-            user.is_active =True
+            user.is_active = True
             user.save()
-            auth.login(request,user)
-        return render(request,'users/verification.html')
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        return render(request, 'users/verification.html')
     except Exception as e:
+        print(e)
         return HttpResponseRedirect(reverse('index'))
