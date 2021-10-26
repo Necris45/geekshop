@@ -5,7 +5,6 @@ from users.models import User
 from products.models import ProductCategory, Product
 
 
-
 class UserAdminRegisterForm(UserRegisterForm):
     image = forms.ImageField(widget=forms.FileInput(), required=False)
 
@@ -56,5 +55,3 @@ class ProductCreateForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-control'
             else:
                 field.widget.attrs['class'] = 'form-control py-4'
-
-
