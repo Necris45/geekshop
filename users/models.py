@@ -9,7 +9,7 @@ NULL_INSTALL = {'null': True, 'blank': True}
 
 
 class User(AbstractUser):
-    image = models.ImageField(upload_to='users_image', max_lenght =250, blank=True)
+    image = models.ImageField(upload_to='users_image', blank=True)
     age = models.PositiveIntegerField(default=18)
 
     activation_key = models.CharField(max_length=128, **NULL_INSTALL)
