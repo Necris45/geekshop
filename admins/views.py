@@ -16,7 +16,10 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 
 def index(request):
-    return render(request, 'admins/admin.html')
+    if request.user.is_superuser:
+        return render(request, 'admins/admin.html')
+    else:
+        return render(request, 'users/login.html')
 
 
 class UserListView(ListView, CustomDispatchMixin):
