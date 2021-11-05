@@ -35,8 +35,9 @@ class ProductListView(ListView):
         if 'page_id' in self.kwargs:
             page_id = self.kwargs['page_id']
 
-        goods = Product.objects.filter(category_id=category_id, is_active=True, category__is_active=True) \
-            if category_id is not None else Product.objects.filter(is_active=True, category__is_active=True)
+        goods = Product.objects.filter(category_id=category_id, is_active=True, category__is_active=True).\
+            select_related('category') if category_id is not None else \
+            Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
 
         paginator = Paginator(goods, per_page=3)
 

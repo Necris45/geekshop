@@ -63,6 +63,7 @@
                                     <a href="#">{{ product.name }}</a>
                                 </h4>
                                 <h5>{{ product.price }} руб.</h5>
+                                <p class="card-text">{{ product.category.name }}</p>
                                 <p class="card-text">{{ product.description }}</p>
                             </div>
                             <form action="{% url 'baskets:basket' product_id=product.id %}" method="post">
