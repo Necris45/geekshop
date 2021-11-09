@@ -1,5 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.cache import cache_page, never_cache
+
 from .models import ProductCategory, Product
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
@@ -56,6 +58,7 @@ def get_product(pk):
         return get_object_or_404(Product, pk=pk)
 
 
+@never_cache
 class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
@@ -95,7 +98,7 @@ class ProductListView(ListView):
 
         return context
 
-
+# @cache_page(3600)
 class ProductDetail(DetailView):
     """
     Контроллер вывода информации о продукте
