@@ -38,6 +38,20 @@ class BasketDeleteView(DeleteView, UserDispatchMixin):
     model = Basket
     success_url = reverse_lazy('users:profile')
 
+    def get(self, request, *args, **kwargs):
+        super(BasketUpdateView, self).get(request, *args, **kwargs)
+        if request.is_ajax():
+            basket_id = kwargs[self.pk_url_kwarg]
+            quantity = kwargs['quantity']
+            baskets = Basket.objects.filter(id=basket_id)
+            if baskets.exists():
+                basket = baskets.first()
+                if quantity > 0:
+                    basket.quantity = quantity
+                    basket.save()
+                else:
+                    basket.delete()
+
 
 class BasketUpdateView(UpdateView, UserDispatchMixin):
     model = Basket
