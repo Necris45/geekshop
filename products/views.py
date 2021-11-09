@@ -58,7 +58,7 @@ def get_product(pk):
         return get_object_or_404(Product, pk=pk)
 
 
-@never_cache
+
 class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
