@@ -42,6 +42,10 @@ class Basket(models.Model):
     def get_items_cached(self):
         return self.user.basket.select_related()
 
+    @staticmethod
+    def get_item(pk):
+        return Basket.objects.get(pk=pk).quantity
+
     # def delete(self, using=None, keep_parents=False):
     #     self.product.quantity += self.quantity
     #     self.save()
