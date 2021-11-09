@@ -28,16 +28,20 @@ def get_links_category():
         return ProductCategory.objects.filter(is_active=True)
 
 
-def get_link_product():
+def get_link_product(category_id=None):
     if settings.LOW_CACHE:
         key = 'links_product'
         link_product = cache.get(key)
         if link_product is None:
-            link_product = Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
-            cache.set(key, link_product)
+            link_product = \
+                Product.objects.filter(category_id=category_id, is_active=True,
+                                       category__is_active=True).select_related('category') if category_id is not None \
+                    else Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
         return link_product
     else:
-        return Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
+        return Product.objects.filter(category_id=category_id, is_active=True,
+                                      category__is_active=True).select_related('category') if category_id is not None \
+            else Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
 
 
 def get_product(pk):
@@ -76,7 +80,7 @@ class ProductListView(ListView):
         #     select_related('category') if category_id is not None else \
         #     Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
 
-        goods = get_link_product()
+        goods = get_link_product(category_id=category_id)
 
         paginator = Paginator(goods, per_page=3)
 
