@@ -87,17 +87,6 @@ class CategoryListView(ListView, CustomDispatchMixin):
         return context
 
 
-class ProductListView(ListView, CustomDispatchMixin):
-    model = Product
-    template_name = 'admins/admin-products-read.html'
-    context_object_name = 'products'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ProductListView, self).get_context_data(**kwargs)
-        context['title'] = 'Админка | Продукты'
-        return context
-
-
 class CategoryCreateView(CreateView, CustomDispatchMixin):
     model = ProductCategory
     template_name = 'admins/admin_category_create.html'
@@ -137,6 +126,17 @@ class CategoryDeleteView(DeleteView, CustomDispatchMixin):
         return HttpResponseRedirect(self.get_success_url())
 
 
+class ProductListView(ListView, CustomDispatchMixin):
+    model = Product
+    template_name = 'admins/admin-products-read.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Продукты'
+        return context
+
+
 class ProductCreateView(CreateView, CustomDispatchMixin):
     model = Product
     template_name = 'admins/admin-product-create.html'
@@ -163,7 +163,7 @@ class ProductUpdateView(UpdateView, CustomDispatchMixin):
 
 class ProductDeleteView(DeleteView, CustomDispatchMixin):
     model = Product
-    template_name = 'admins/admin-product-read.html'
+    template_name = 'admins/admin-products-read.html'
     success_url = reverse_lazy('admins:admins_products')
 
     def delete(self, request, *args, **kwargs):
