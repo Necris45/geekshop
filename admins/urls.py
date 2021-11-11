@@ -19,7 +19,7 @@ from django.views.decorators.cache import cache_page
 
 from .views import index, UserUpdateView, UserCreateView, UserListView, UserDeleteView, CategoryListView, \
     ProductListView, CategoryCreateView, ProductCreateView, CategoryUpdateView, CategoryDeleteView, ProductUpdateView, \
-    ProductDeleteView, OrderListView, OrderUpdateView
+    ProductDeleteView, OrderListView, OrderUpdateView, OrderDeleteView
 
 app_name = 'admins'
 urlpatterns = [
