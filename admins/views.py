@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 
 from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm, \
     OrderUpdateForm
+from baskets.models import Basket
 from geekshop.mixin import CustomDispatchMixin
 from ordersapp.forms import OrderItemsForm
 from ordersapp.models import Order, OrderItem
