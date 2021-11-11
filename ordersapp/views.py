@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from baskets.models import Basket
-from geekshop.mixin import BaseClassContextMixin
+from geekshop.mixin import BaseClassContextMixin, UserDispatchMixin
 from ordersapp.forms import OrderItemsForm
 from ordersapp.models import Order, OrderItem
 
