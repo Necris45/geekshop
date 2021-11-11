@@ -23,6 +23,7 @@ class UserAdminRegisterForm(UserRegisterForm):
 
 
 class UserAdminProfileForm(UserProfileForm):
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(UserAdminProfileForm, self).__init__(*args, **kwargs)
