@@ -19,7 +19,7 @@ from django.views.decorators.cache import cache_page
 
 from .views import index, UserUpdateView, UserCreateView, UserListView, UserDeleteView, CategoryListView, \
     ProductListView, CategoryCreateView, ProductCreateView, CategoryUpdateView, CategoryDeleteView, ProductUpdateView, \
-    ProductDeleteView, OrderListView, OrderUpdateView, OrderDeleteView
+    ProductDeleteView, OrderListView, OrderDeleteView, AdminOrderUpdateView
 
 app_name = 'admins'
 urlpatterns = [
@@ -38,6 +38,6 @@ urlpatterns = [
     path('product-update/<int:pk>/', ProductUpdateView.as_view(), name='admins_product_update'),
     path('product-delete/<int:pk>/', ProductDeleteView.as_view(), name='admins_product_delete'),
     path('orders/', cache_page(3600)(OrderListView.as_view()), name='admins_orders'),
-    path('order-update/<int:pk>/', OrderUpdateView.as_view(), name='admins_order_update'),
+    path('order-update/<int:pk>/', AdminOrderUpdateView.as_view(), name='admins_order_update'),
     path('order-delete/<int:pk>/', OrderDeleteView.as_view(), name='admins_order_delete'),
 ]

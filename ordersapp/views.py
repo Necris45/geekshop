@@ -13,14 +13,14 @@ from ordersapp.models import Order, OrderItem
 from products.models import Product
 
 
-class OrderList(ListView):
+class OrderList(ListView, UserDispatchMixin):
     model = Order
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user, is_active=True)
 
 
-class OrderCreate(CreateView):
+class OrderCreate(CreateView, UserDispatchMixin):
     model = Order
     fields = []
     success_url = reverse_lazy('orders:list')
@@ -69,7 +69,7 @@ class OrderCreate(CreateView):
         return super(OrderCreate, self).form_valid(form)
 
 
-class OrderUpdate(UpdateView):
+class OrderUpdate(UpdateView, UserDispatchMixin):
     model = Order
     fields = []
     success_url = reverse_lazy('orders:list')
@@ -106,7 +106,7 @@ class OrderUpdate(UpdateView):
         return super(OrderUpdate, self).form_valid(form)
 
 
-class OrderDelete(DeleteView):
+class OrderDelete(DeleteView, UserDispatchMixin):
     model = Order
     success_url = reverse_lazy('orders:list')
 

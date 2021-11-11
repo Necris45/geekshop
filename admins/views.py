@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test
+from django.forms import inlineformset_factory
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -6,7 +7,8 @@ from django.utils.decorators import method_decorator
 from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm, \
     OrderUpdateForm
 from geekshop.mixin import CustomDispatchMixin
-from ordersapp.models import Order
+from ordersapp.forms import OrderItemsForm
+from ordersapp.models import Order, OrderItem
 from users.models import User
 from products.models import ProductCategory, Product
 from django.shortcuts import render
@@ -189,15 +191,46 @@ class OrderListView(ListView, CustomDispatchMixin):
         return context
 
 
-class OrderUpdateView(UpdateView, CustomDispatchMixin):
+class AdminOrderUpdateView(UpdateView, CustomDispatchMixin):
+    # model = Order
+    # template_name = 'admins/admin-order-update-delete.html'
+    # form_class = OrderUpdateForm
+    # success_url = reverse_lazy('admins:admins_orders')
+    #
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super(OrderUpdateView, self).get_context_data(**kwargs)
+    #     context['title'] = 'Админка | Изменение заказа'
+    #     return context
     model = Order
     template_name = 'admins/admin-order-update-delete.html'
-    form_class = OrderUpdateForm
+    fields = []
     success_url = reverse_lazy('admins:admins_orders')
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(OrderUpdateView, self).get_context_data(**kwargs)
-        context['title'] = 'Админка | Изменение заказа'
+    def get_context_data(self, **kwargs):
+        context = super(AdminOrderUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop | Создать заказ'
+
+        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=0)
+
+        if self.request.POST:
+            formset = OrderFormSet(self.request.POST)
+        else:
+            basket_items = Basket.objects.filter(user=self.request.user)
+            if basket_items:
+                OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=basket_items.count())
+                formset = OrderFormSet()
+
+                for num, form in enumerate(formset.forms):
+                    form.initial['product'] = basket_items[num].product
+                    form.initial['quantity'] = basket_items[num].quantity
+                    form.initial['price'] = basket_items[num].product.price
+                    # обнулим кол-во, чтобы при удалении из корзины от создания заказа не прибавлялся лишний товар в заказ
+                    # basket_items[num].quantity = 0
+                basket_items.delete()
+            else:
+                formset = OrderFormSet()
+
+        context['orderitems'] = formset
         return context
 
 
