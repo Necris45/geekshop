@@ -36,7 +36,7 @@
                                                style="color: dodgerblue">{{ order.id }}</a>
                                         </td>
                                         <td>{{ order.user }}</td>
-                                        <td>{{ order.status }}</td>
+                                        <td>{{ order.get_status_display }}</td>
                                         <td>{{ order.created }}</td>
                                     </tr>
                                 {% endfor %}
