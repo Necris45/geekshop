@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 
 from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm
 from geekshop.mixin import CustomDispatchMixin
+from ordersapp.models import Order
 from users.models import User
 from products.models import ProductCategory, Product
 from django.shortcuts import render
@@ -174,3 +175,14 @@ class ProductDeleteView(DeleteView, CustomDispatchMixin):
             self.object.is_active = True
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class OrderListView(ListView, CustomDispatchMixin):
+    model = Order
+    template_name = 'admins/admin-orders-read.html'
+    context_object_name = 'orders'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(UserListView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Заказы'
+        return context

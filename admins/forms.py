@@ -1,5 +1,6 @@
 from django import forms
 
+from ordersapp.models import Order
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
 from products.models import ProductCategory, Product
@@ -55,3 +56,15 @@ class ProductCreateForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-control'
             else:
                 field.widget.attrs['class'] = 'form-control py-4'
+
+
+class OrderUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(OrderUpdateForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
