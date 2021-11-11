@@ -32,8 +32,8 @@
                                 <tbody>
                                 {% for order in orders %}
                                     <tr>
-                                        <td><a href="#"
-                                               style="color: dodgerblue">{{ order.id }}</a>
+                                        <td><a href="{% url 'admins:admins_order_update' order.id %}"
+                                               style="color: dodgerblue">Заказ №{{ order.id }}</a>
                                         </td>
                                         <td>{{ order.user }}</td>
                                         <td>{{ order.get_status_display }}</td>

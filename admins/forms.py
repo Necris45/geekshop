@@ -61,7 +61,7 @@ class ProductCreateForm(forms.ModelForm):
 class OrderUpdateForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ('status')
 
     def __init__(self, *args, **kwargs):
         super(OrderUpdateForm, self).__init__(*args, **kwargs)

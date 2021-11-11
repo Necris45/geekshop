@@ -3,7 +3,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm
+from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm, \
+    OrderUpdateForm
 from geekshop.mixin import CustomDispatchMixin
 from ordersapp.models import Order
 from users.models import User
@@ -186,3 +187,30 @@ class OrderListView(ListView, CustomDispatchMixin):
         context = super(OrderListView, self).get_context_data(**kwargs)
         context['title'] = 'Админка | Заказы'
         return context
+
+
+class OrderUpdateView(UpdateView, CustomDispatchMixin):
+    model = Order
+    template_name = 'admins/admin-order-update-delete.html'
+    form_class = OrderUpdateForm
+    success_url = reverse_lazy('admins:admins_orders')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(OrderUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'Админка | Изменение заказа'
+        return context
+
+
+class OrderDeleteView(DeleteView, CustomDispatchMixin):
+    model = Order
+    template_name = 'admins/admin-orders-read.html'
+    success_url = reverse_lazy('admins:admins_orders')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.is_active is not False:
+            self.object.is_active = False
+        else:
+            self.object.is_active = True
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
