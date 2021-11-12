@@ -7,6 +7,22 @@
             <div class="container-fluid">
                 <h1 class="mt-4">Редактирование заказа | {{ order.id }}</h1>
                 <div class="card-body">
+                    <div>
+                        <div class="col-lg-4">
+                            <h1 class="mt-4">Заказ №{{ order.id }}</h1>
+                        </div>
+                        <div class="col-lg-4">
+                            <h1 class="mt-4">Заказчик {{ order.user }}</h1>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="col-lg-6">
+                            <h1 class="mt-4">Заказ создан {{ order.created }}</h1>
+                        </div>
+                        <div class="col-lg-6">
+                            <h1 class="mt-4">Заказ обновлен {{ order.updated }}</h1>
+                        </div>
+                    </div>
                     <form action="{% url 'admins:admins_order_update' order.id %}" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
                             <div class="form-row">
