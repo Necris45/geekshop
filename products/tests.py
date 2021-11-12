@@ -17,14 +17,14 @@ class TestMainSmokeTest(TestCase):
         self.client = Client()
 
     #2 выполнения теста
-    def test_products_pages(self):
-        response = self.client.get('/')
-        self.assertEqual(response.status_code,self.status_code_success)
-
-    def test_products_product(self):
-        for product_item in Product.objects.all():
-            response = self.client.get(f'/products/detail/{product_item.pk}/')
-            self.assertEqual(response.status_code, self.status_code_success)
+    # def test_products_pages(self):
+    #     response = self.client.get('/')
+    #     self.assertEqual(response.status_code,self.status_code_success)
+    #
+    # def test_products_product(self):
+    #     for product_item in Product.objects.all():
+    #         response = self.client.get(f'/products/detail/{product_item.pk}/')
+    #         self.assertEqual(response.status_code, self.status_code_success)
 
         # 2 выполнения теста
     def test_products_basket(self):
