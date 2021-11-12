@@ -3,10 +3,12 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, CreateView, UpdateView
+from django.db.models import F
 # Create your views here.
 from baskets.models import Basket
 from geekshop.mixin import UserDispatchMixin
 from products.models import Product
+
 
 
 class BasketCreateView(CreateView, UserDispatchMixin):
@@ -28,8 +30,12 @@ class BasketCreateView(CreateView, UserDispatchMixin):
                     Basket.objects.create(user=request.user, product=product, quantity=1)
                 else:
                     basket = baskets.first()
-                    basket.quantity += 1
+                    # basket.quantity += 1
+                    basket.quantity = F('quantity') + 1
                     basket.save()
+
+                    # update_queries = list(filter(lambda x: 'UPDATE' in x['sql'], connection.queries))
+                    # print(f'basket_add {update_queries}')
 
         return redirect(self.success_url)
 
