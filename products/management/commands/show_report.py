@@ -22,9 +22,9 @@ class Command(BaseCommand):
         action_2_discount = 0.15
         action_3_discount = 0.05
 
-        action_1_condition = Q(order__updated__lte=F('order__created') + action_1_time_delta)
+        action_1_condition = Q(order__update__lte=F('order__created') + action_1_time_delta)
 
-        action_2_condition = Q(order__updated__gt=F('order__created') + action_1_time_delta) & Q(
+        action_2_condition = Q(order__update__gt=F('order__created') + action_1_time_delta) & Q(
             order__updated__lte=F('order__created') + action_2_time_delta)
 
         action_3_condition = Q(order__updated__gt=F('order__created') + action_2_time_delta)
