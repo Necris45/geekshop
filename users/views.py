@@ -17,7 +17,18 @@ from users.models import User
 class LoginListView(LoginView, BaseClassContextMixin):
     template_name = 'users/login.html'
     form_class = UserLoginForm
-    title = 'Geekshop - Авторизация'
+    success_url = 'index'
+
+    def get(self, request, *args, **kwargs):
+        sup = super(LoginListView, self).get(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse_lazy(self.success_url))
+        return sup
+
+    def get_context_data(self, **kwargs):
+        context = super(LoginListView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop - Авторизация'
+        return context
 
 
 class RegisterListView(FormView, BaseClassContextMixin):
