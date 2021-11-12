@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 
 # Create your tests here.
-from products.models import ProductsCategory, Product
+from products.models import Product, ProductCategory
 
 
 class TestMainSmokeTest(TestCase):
@@ -10,7 +10,7 @@ class TestMainSmokeTest(TestCase):
 
     #1 предустановленные параметры
     def setUp(self) -> None:
-        category = ProductsCategory.objects.create(name='Test')
+        category = ProductCategory.objects.create(name='Test')
         Product.objects.create(category=category,name='product_test',price=100)
 
         self.client = Client()
