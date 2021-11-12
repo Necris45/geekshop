@@ -18,7 +18,7 @@ class TestMainSmokeTest(TestCase):
 
     #2 выполнения теста
     def test_products_pages(self):
-        response = self.client.get('/products/page/1/')
+        response = self.client.get('/products/detail/1/')
         print(response.status_code)
         # self.assertEqual(response.status_code, 200)
     #
