@@ -25,7 +25,7 @@ class Command(BaseCommand):
         action_1_condition = Q(order__update__lte=F('order__created') + action_1_time_delta)
 
         action_2_condition = Q(order__update__gt=F('order__created') + action_1_time_delta) & Q(
-            order__updated__lte=F('order__created') + action_2_time_delta)
+            order__update__lte=F('order__created') + action_2_time_delta)
 
         action_3_condition = Q(order__update__gt=F('order__created') + action_2_time_delta)
 
