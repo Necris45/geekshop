@@ -19,6 +19,7 @@
                                     <th>Заказчик</th>
                                     <th>Статус</th>
                                     <th>Дата создания</th>
+                                    <th>Дата обновления</th>
                                     <th>Активный</th>
                                 </tr>
                                 </thead>
@@ -28,6 +29,7 @@
                                     <th>Заказчик</th>
                                     <th>Статус</th>
                                     <th>Дата создания</th>
+                                    <th>Дата обновления</th>
                                     <th>Активный</th>
                                 </tr>
                                 </tfoot>
@@ -40,6 +42,7 @@
                                         <td>{{ order.user }}</td>
                                         <td>{{ order.get_status_display }}</td>
                                         <td>{{ order.created }}</td>
+                                        <td>{{ order.update }}</td>
                                         <td class="text-center">
                                             {% if order.is_active %}
                                                 <i class="fas fa-check-circle"></i>
