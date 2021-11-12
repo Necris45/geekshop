@@ -9,13 +9,16 @@
                 <div class="card-body">
                     <div>
                         <div class="col-lg-12">
-                            <h1 class="mt-4">Заказ №{{ order.id }}</h1>
+                            <label class="mt-4">Заказ №{{ order.id }}</label>
                         </div>
                         <div class="col-lg-12">
-                            <h1 class="mt-4">Заказчик {{ order.user }}</h1>
+                            <label class="mt-4">Заказчик {{ order.user }}</label>
                         </div>
                         <div class="col-lg-12">
-                            <h1 class="mt-4">Заказ создан {{ order.created }}</h1>
+                            <label class="mt-4">Заказ создан {{ order.created }}</label>
+                        </div>
+                        <div class="col-lg-12">
+                            <label class="mt-4">Заказ изменен {{ order.update }}</label>
                         </div>
                     </div>
                     <form action="{% url 'admins:admins_order_update' order.id %}" method="post" enctype="multipart/form-data">
