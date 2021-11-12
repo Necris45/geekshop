@@ -12,6 +12,7 @@ class TestMainSmokeTest(TestCase):
     def setUp(self) -> None:
         category = ProductCategory.objects.create(name='Test')
         Product.objects.create(category=category,name='product_test',price=100)
+        Product.objects.create(category=category, name='product_test1', price=1000)
 
         self.client = Client()
 
@@ -20,15 +21,15 @@ class TestMainSmokeTest(TestCase):
         response = self.client.get('/')
         self.assertEqual(response.status_code,self.status_code_success)
 
-    # def test_products_product(self):
-    #     for product_item in Product.objects.all():
-    #         response = self.client.get(f'/products/detail/{product_item.pk}/')
-    #         self.assertEqual(response.status_code, self.status_code_success)
-    #
-    #     # 2 выполнения теста
-    # def test_products_basket(self):
-    #         response = self.client.get('/users/profile/')
-    #         self.assertEqual(response.status_code, 302)
+    def test_products_product(self):
+        for product_item in Product.objects.all():
+            response = self.client.get(f'/products/detail/{product_item.pk}/')
+            self.assertEqual(response.status_code, self.status_code_success)
+
+        # 2 выполнения теста
+    def test_products_basket(self):
+            response = self.client.get('/users/profile/')
+            self.assertEqual(response.status_code, 302)
 
     #3 освобождения памяти от данных
     def tearDown(self) -> None:
