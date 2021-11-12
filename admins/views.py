@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-
+from django.db import connection
 from admins.forms import UserAdminRegisterForm, UserAdminProfileForm, ProductCategoryCreateForm, ProductCreateForm, \
     OrderUpdateForm
 from geekshop.mixin import CustomDispatchMixin
@@ -10,7 +10,7 @@ from ordersapp.models import Order
 from users.models import User
 from products.models import ProductCategory, Product
 from django.shortcuts import render
-
+from django.db.models import F
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 
@@ -107,6 +107,14 @@ class CategoryUpdateView(UpdateView, CustomDispatchMixin):
     form_class = ProductCategoryCreateForm
     success_url = reverse_lazy('admins:admins_categories')
 
+    def form_valid(self, form):
+        if 'discount' in form.cleaned_data:
+            discount = form.cleaned_data['discount']
+            if discount:
+                # print(f'применяется скидка {discount} % к товарам категории {self.object.name}')
+                self.object.product_set.update(price=F('price') * (1 - discount / 100))
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(CategoryUpdateView, self).get_context_data(**kwargs)
         context['title'] = 'Админка | Изменение Категории'
@@ -122,8 +130,10 @@ class CategoryDeleteView(DeleteView, CustomDispatchMixin):
         self.object = self.get_object()
         if self.object.is_active is not False:
             self.object.is_active = False
+            # self.object.product_set.update(is_active=False)
         else:
             self.object.is_active = True
+            # self.object.product_set.update(is_active=True)
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
