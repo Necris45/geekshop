@@ -15,7 +15,10 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 
 # Create your views here.
-
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x['sql'], queries))
+    print(f'db_profile {type} for {prefix}:')
+    [print(query['sql']) for query in update_queries]
 
 def index(request):
     if request.user.is_superuser:
