@@ -7,7 +7,6 @@ from ordersapp.models import OrderItem
 from products.models import Product
 from django.db import connection
 from django.db.models import Q, F, When, Case, IntegerField, DecimalField
-from admins.views import db_profile_by_type
 
 
 class Command(BaseCommand):
