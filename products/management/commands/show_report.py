@@ -59,5 +59,5 @@ class Command(BaseCommand):
         for orderitem in test_orders:
             t_list.add_row([f'{orderitem.action_order} заказ №{orderitem.pk}', f'{orderitem.product.name:15}',
                             f'{abs(orderitem.total_price):6.2f} руб.',
-                            orderitem.order.updated - orderitem.order.created])
+                            orderitem.order.update - orderitem.order.created])
         print(t_list)
