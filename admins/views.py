@@ -24,7 +24,7 @@ def index(request):
     if request.user.is_superuser:
         return render(request, 'admins/admin.html')
     else:
-        return HttpResponseRedirect('users/login.html')
+        return HttpResponseRedirect('products/products.html')
 
 
 class UserListView(ListView, CustomDispatchMixin):
