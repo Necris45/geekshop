@@ -21,10 +21,7 @@ def db_profile_by_type(prefix, type, queries):
     [print(query['sql']) for query in update_queries]
 
 def index(request):
-    if request.user.is_superuser:
-        return render(request, 'admins/admin.html')
-    else:
-        return HttpResponseRedirect('products/products.html')
+    return render(request, 'admins/admin.html')
 
 
 class UserListView(ListView, CustomDispatchMixin):
