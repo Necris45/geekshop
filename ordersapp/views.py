@@ -78,7 +78,7 @@ class OrderUpdate(UpdateView, UserDispatchMixin):
         context = super(OrderUpdate, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop | Обновление заказа'
 
-        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=1)
+        OrderFormSet = inlineformset_factory(Order, OrderItem, form=OrderItemsForm, extra=0)
 
         if self.request.POST:
             formset = OrderFormSet(self.request.POST, instance=self.object)
