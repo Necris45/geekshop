@@ -1,9 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.views.decorators.cache import cache_page, never_cache
+
 from .models import ProductCategory, Product
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
-
+from django.conf import settings
+from django.core.cache import cache
 
 # Create your views here.
 
@@ -15,6 +18,47 @@ def index(request):
     return render(request, 'products/index.html', context)
 
 
+def get_links_category():
+    if settings.LOW_CACHE:
+        key = 'links_category'
+        link_category = cache.get(key)
+        if link_category is None:
+            link_category = ProductCategory.objects.filter(is_active=True)
+            cache.set(key, link_category)
+        return link_category
+    else:
+        return ProductCategory.objects.filter(is_active=True)
+
+
+def get_link_product(category_id=None):
+    if settings.LOW_CACHE:
+        key = 'links_product'
+        link_product = cache.get(key)
+        if link_product is None:
+            link_product = \
+                Product.objects.filter(category_id=category_id, is_active=True,
+                                       category__is_active=True).select_related('category') if category_id is not None \
+                    else Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
+        return link_product
+    else:
+        return Product.objects.filter(category_id=category_id, is_active=True,
+                                      category__is_active=True).select_related('category') if category_id is not None \
+            else Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
+
+
+def get_product(pk):
+    if settings.LOW_CACHE:
+        key = f'product{pk}'
+        product = cache.get(key)
+        if product is None:
+            product = get_object_or_404(Product, pk=pk)
+            cache.set(key, product)
+        return product
+    else:
+        return get_object_or_404(Product, pk=pk)
+
+
+
 class ProductListView(ListView):
     model = Product
     template_name = 'products/products.html'
@@ -24,7 +68,7 @@ class ProductListView(ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(ProductListView, self).get_context_data(*args, **kwargs)
         context['title'] = 'Каталог'
-        context['categories'] = ProductCategory.objects.filter(is_active=True)
+        context['categories'] = get_links_category()
 
         category_id = None
         page_id = 1
@@ -35,8 +79,11 @@ class ProductListView(ListView):
         if 'page_id' in self.kwargs:
             page_id = self.kwargs['page_id']
 
-        goods = Product.objects.filter(category_id=category_id, is_active=True, category__is_active=True) \
-            if category_id is not None else Product.objects.filter(is_active=True, category__is_active=True)
+        # goods = Product.objects.filter(category_id=category_id, is_active=True, category__is_active=True).\
+        #     select_related('category') if category_id is not None else \
+        #     Product.objects.filter(is_active=True, category__is_active=True).select_related('category')
+
+        goods = get_link_product(category_id=category_id)
 
         paginator = Paginator(goods, per_page=3)
 
@@ -49,4 +96,22 @@ class ProductListView(ListView):
 
         context['products'] = products_paginator
 
+        return context
+
+# @cache_page(3600)
+class ProductDetail(DetailView):
+    """
+    Контроллер вывода информации о продукте
+    """
+    model = Product
+    template_name = 'products/product_detail.html'
+    context_object_name = 'product'
+
+
+    def get_context_data(self, category_id=None, *args, **kwargs):
+        """Добавляем список категорий для вывода сайдбара с категориями на странице каталога"""
+        context = super().get_context_data()
+
+        context['product'] = get_product(self.kwargs.get('pk'))
+        context['categories'] = get_links_category()
         return context

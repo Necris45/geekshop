@@ -1,4 +1,4 @@
-window.onload = function () {
+//window.onload = function () {
 
     let _quantity, _price, orderitem_num, delta_quantity, orderitem_quantity, delta_cost;
 
@@ -102,4 +102,4 @@ window.onload = function () {
             });
         }
     });
-}
+//}

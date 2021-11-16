@@ -15,25 +15,29 @@ Including another URLconf
 """
 
 from django.urls import path
+from django.views.decorators.cache import cache_page
 
 from .views import index, UserUpdateView, UserCreateView, UserListView, UserDeleteView, CategoryListView, \
     ProductListView, CategoryCreateView, ProductCreateView, CategoryUpdateView, CategoryDeleteView, ProductUpdateView, \
-    ProductDeleteView
+    ProductDeleteView, OrderListView, OrderUpdateView, OrderDeleteView
 
 app_name = 'admins'
 urlpatterns = [
 
     path('', index, name='index'),
-    path('users/', UserListView.as_view(), name='admins_user'),
+    path('users/', cache_page(3600)(UserListView.as_view()), name='admins_user'),
     path('users-create/', UserCreateView.as_view(), name='admins_user_create'),
     path('users-update/<int:pk>/', UserUpdateView.as_view(), name='admins_user_update'),
     path('users-delete/<int:pk>/', UserDeleteView.as_view(), name='admins_user_delete'),
-    path('categories/', CategoryListView.as_view(), name='admins_categories'),
-    path('products/', ProductListView.as_view(), name='admins_products'),
+    path('categories/', cache_page(3600)(CategoryListView.as_view()), name='admins_categories'),
+    path('products/', cache_page(3600)(ProductListView.as_view()), name='admins_products'),
     path('category-create/', CategoryCreateView.as_view(), name='admins_category_create'),
     path('product-create/', ProductCreateView.as_view(), name='admins_product_create'),
     path('category-update/<int:pk>/', CategoryUpdateView.as_view(), name='admins_category_update'),
     path('category-delete/<int:pk>/', CategoryDeleteView.as_view(), name='admins_category_delete'),
     path('product-update/<int:pk>/', ProductUpdateView.as_view(), name='admins_product_update'),
     path('product-delete/<int:pk>/', ProductDeleteView.as_view(), name='admins_product_delete'),
+    path('orders/', cache_page(3600)(OrderListView.as_view()), name='admins_orders'),
+    path('order-update/<int:pk>/', OrderUpdateView.as_view(), name='admins_order_update'),
+    path('order-delete/<int:pk>/', OrderDeleteView.as_view(), name='admins_order_delete'),
 ]

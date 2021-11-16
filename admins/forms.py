@@ -1,5 +1,6 @@
 from django import forms
 
+from ordersapp.models import Order
 from users.forms import UserRegisterForm, UserProfileForm
 from users.models import User
 from products.models import ProductCategory, Product
@@ -22,6 +23,7 @@ class UserAdminRegisterForm(UserRegisterForm):
 
 
 class UserAdminProfileForm(UserProfileForm):
+    image = forms.ImageField(widget=forms.FileInput(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(UserAdminProfileForm, self).__init__(*args, **kwargs)
@@ -30,12 +32,15 @@ class UserAdminProfileForm(UserProfileForm):
 
 
 class ProductCategoryCreateForm(forms.ModelForm):
+    discount = forms.IntegerField(widget=forms.NumberInput(), label='скидка', required=False, min_value=0, max_value=90,
+                                  initial=0)
+
     class Meta:
         model = ProductCategory
-        fields = '__all__'
+        fields = ("name", "description", "discount")
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(ProductCategoryCreateForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             field.help_text = ''
@@ -49,9 +54,21 @@ class ProductCreateForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(ProductCreateForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if field_name == 'image' or field_name == 'category':
                 field.widget.attrs['class'] = 'form-control'
             else:
                 field.widget.attrs['class'] = 'form-control py-4'
+
+
+class OrderUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ('status', )
+
+    def __init__(self, *args, **kwargs):
+        super(OrderUpdateForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.help_text = ''
